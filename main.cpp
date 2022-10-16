@@ -1,25 +1,22 @@
 #include <iostream>
-#include "SCF.h"
+#include <cmath>
 #include "Eigen/Dense"
- 
-using Eigen::MatrixXd;
+#include "SCF_CS.h"
+
 
 int main(){
 
-    double alpha[]={0.233136, 1.309757};
-    double nucl[3][3] = { 
-                          
-                          {-1, 0, 0} , 
-                          {0 , 1, 0},
-                          {1,0,0}
-    };
+    Eigen::MatrixXd nucl {{1,0,0},{2,3,4},{5,6,7}};
+    Eigen::VectorXd alpha {{0.233, 1.33}};
+    int N_el=2;
 
-    int N_el = 2;
-    int N_exp= sizeof(alpha)/sizeof(double);
-    int N_nucl=sizeof(nucl)/sizeof(nucl[0]);
+    SCF_CS calc;
+    calc.set_elnum(N_el);
+    calc.set_nucl(&nucl);
+    calc.set_alpha(&alpha);
 
-    SCF_cycle calc(alpha,N_exp,&(nucl[0][0]),N_nucl,N_el);
-    calc.SCF_StartCalc(alpha,N_exp,&(nucl)[3],N_nucl);
+    calc.SCF_SinglePoint();
+
 
     return 0;
 }
