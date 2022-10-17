@@ -7,11 +7,12 @@ private:
     
 
     
-    void calcXHMMat();
+    void calcXHMMat(Eigen::MatrixXd*, Eigen::MatrixXd*,Eigen::MatrixXd*);
 
     int N_el;
     Eigen::MatrixXd nucl;
     Eigen::VectorXd alpha;
+
 
 
 public:
