@@ -18,6 +18,12 @@ void SCF_CS::set_elnum(int elnum){
     std::cout<<"--------------------------------------------------"<<std::endl;
 };
 
+void SCF_CS::set_Z(Eigen::VectorXi* Zvec){
+    Z_at=*Zvec;
+    std::cout<<"Z of nucl: "<<Z_at<<std::endl;
+    std::cout<<"--------------------------------------------------"<<std::endl;
+};
+
 void SCF_CS::set_nucl(Eigen::MatrixXd* nuclref){
 
     nucl=*nuclref;
@@ -104,7 +110,7 @@ void SCF_CS::SCF_SinglePoint(){
         Etot=Ee;
         for(int i=0;i<n_nucl;i++){
             for(int j=i+1;j<n_nucl;j++){
-                Etot=Etot+pow(pow(nucl(i,0)-nucl(j,0),2)+pow(nucl(i,1)-nucl(j,1),2)+pow(nucl(i,2)-nucl(j,2),2),-0.5);
+                Etot=Etot+Z_at(i)*Z_at(j)*pow(pow(nucl(i,0)-nucl(j,0),2)+pow(nucl(i,1)-nucl(j,1),2)+pow(nucl(i,2)-nucl(j,2),2),-0.5);
             }
         }
         std::cout<<"Iteration: "<<++iter<<": E_el = "<<Ee<<": E_tot = "<<Etot<<std::endl;
@@ -129,6 +135,7 @@ void SCF_CS::calcXHMMat(Eigen::MatrixXd *Xij,Eigen::MatrixXd *Hij,Eigen::MatrixX
             BasisM(i*n_nucl+j,1)=nucl(j,0);
             BasisM(i*n_nucl+j,2)=nucl(j,1);
             BasisM(i*n_nucl+j,3)=nucl(j,2);
+            
         }
     }
 
@@ -153,9 +160,9 @@ void SCF_CS::calcXHMMat(Eigen::MatrixXd *Xij,Eigen::MatrixXd *Hij,Eigen::MatrixX
                 RiRc=sqrt(pow(BasisM(i,1)-nucl(k,0),2)+pow(BasisM(i,2)-nucl(k,1),2)+pow(BasisM(i,3)-nucl(k,2),2));
                 
                 if(RiRc==0)
-                    Vij(i,i)=Vij(i,i)-2*sqrt(2*a_i/M_PI);
+                    Vij(i,i)=Vij(i,i)-2*sqrt(2*a_i/M_PI)*Z_at(k);
                 else
-                    Vij(i,i)=Vij(i,i)-1/(RiRc)*erf(sqrt(2*a_i)*RiRc);
+                    Vij(i,i)=Vij(i,i)-1/(RiRc)*erf(sqrt(2*a_i)*RiRc)*Z_at(k);
 
             }
             
@@ -181,9 +188,9 @@ void SCF_CS::calcXHMMat(Eigen::MatrixXd *Xij,Eigen::MatrixXd *Hij,Eigen::MatrixX
                     RiRc=sqrt(pow(Rp(0)-nucl(k,0),2)+pow(Rp(1)-nucl(k,1),2)+pow(Rp(2)-nucl(k,2),2));
                     
                     if(RiRc==0)
-                        Vij(i,j)=Vij(i,j)-2*Sij(i,j)*sqrt((a_i+a_j)/M_PI);
+                        Vij(i,j)=Vij(i,j)-2*Sij(i,j)*sqrt((a_i+a_j)/M_PI)*Z_at(k);
                     else
-                        Vij(i,j)=Vij(i,j)-Sij(i,j)/(RiRc)*erf(sqrt(a_i+a_j)*RiRc);
+                        Vij(i,j)=Vij(i,j)-Sij(i,j)/(RiRc)*erf(sqrt(a_i+a_j)*RiRc)*Z_at(k);
                 } 
 
                 Vij(j,i)=Vij(i,j);
