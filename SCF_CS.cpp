@@ -1,10 +1,10 @@
 #include <iostream>
-#include "Eigen/Dense"
-#include "Eigen/Eigenvalues"
+#include "headers/Eigen/Dense"
+#include "headers/Eigen/Eigenvalues"
 #include <cmath>
-#include "SCF_CS.h"
+#include "headers/SCF_CS.h"
 #define _USE_MATH_DEFINES
-#include "unsupported/Eigen/MatrixFunctions"
+#include "headers/unsupported/Eigen/MatrixFunctions"
 
 SCF_CS::SCF_CS(){
 
