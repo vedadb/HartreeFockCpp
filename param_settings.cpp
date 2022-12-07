@@ -57,6 +57,8 @@ void read_param::read_file(std::string filename){
     bool Nel=false;
     bool Nexp=false;
     bool Natoms=false;
+
+
     vector<double> seglist;
 
     if (myfile.is_open()){
@@ -74,12 +76,12 @@ void read_param::read_file(std::string filename){
                         optPar=newline;
                         if(!optPar.compare("num_el")){
                         
-                        if (Nel==false){
-                                Nel=true;
-                            }
-                            else{
-                                 cout<<"Error, number of electrons already defined"<<endl;
-                            }
+                            if (Nel==false){
+                                    Nel=true;
+                                }
+                                else{
+                                    cout<<"Error, number of electrons already defined"<<endl;
+                                }
                         }
                         else if(!optPar.compare("exponents")){
                             
@@ -111,7 +113,7 @@ void read_param::read_file(std::string filename){
                         }
                         else if(!optPar.compare("exponents")){
                             if(seglist.size()>0){
-                                alphavec=seglist;
+                                alphamat.push_back(seglist);
                             }
                         }
                         else if(!optPar.compare("atoms")){
@@ -125,7 +127,55 @@ void read_param::read_file(std::string filename){
             }
             else{
                 if(!optPar.empty()){
-                    if(!trim(line).empty()){
+
+                    if(!trim(line).empty() && !optPar.compare("exponents")){
+                        string newline=trim(line);
+                        if(!newline.compare("S")){
+                            
+                            if(seglist.size()>0){
+                                alphamat.push_back(seglist);
+                                
+                                seglist.clear();
+                            }
+                            seglist.push_back(0);
+                        }
+                        else if(!newline.compare("P")){
+                            if(seglist.size()>0){
+                                alphamat.push_back(seglist);
+                                seglist.clear();
+                            }
+                            seglist.push_back(1);
+                        }
+                        else if(!newline.compare("D")){
+                            if(seglist.size()>0){
+                                alphamat.push_back(seglist);
+                                seglist.clear();
+                            }
+                            seglist.push_back(2);
+                        }
+                        else if(!newline.compare("F")){
+                            if(seglist.size()>0){
+                                alphamat.push_back(seglist);
+                                seglist.clear();
+                            }
+                            seglist.push_back(3);
+                        }
+                        else{
+                            stringstream ss;
+                            ss<<newline;
+                        
+                            string segment;
+                            while(getline(ss,segment, ','))
+                            {
+                                //cout<<segment<<endl;
+                                seglist.push_back(stod(segment));
+                            }
+                        }
+                    }
+                    else if(!trim(line).empty()){
+
+
+
                         string newline=trim(line);
                         stringstream ss;
                         ss<<newline;
@@ -133,7 +183,7 @@ void read_param::read_file(std::string filename){
                         string segment;
                         while(getline(ss,segment, ','))
                         {
-                            //cout<<segment<<endl;
+                           // cout<<segment<<endl;
                             seglist.push_back(stod(segment));
                         }
                         if(!optPar.compare("atoms") && seglist.size()%4!=0){
@@ -142,6 +192,10 @@ void read_param::read_file(std::string filename){
                         }
                         // cout<<"size of seglist "<<seglist.size()<<endl;
                     }
+
+
+
+
                 }
 
 

@@ -1,5 +1,5 @@
 #include "Eigen/Dense"
-
+#include <vector>
 class SCF_CS
 {
 private:
@@ -11,6 +11,7 @@ private:
     
     int N_el;
     Eigen::MatrixXd nucl;
+    Eigen::MatrixXd alphamat;
     Eigen::VectorXd alpha;
     Eigen::VectorXi Z_at;
 
@@ -19,11 +20,11 @@ private:
 public:
 
     SCF_CS();
+    void set_alphamat(std::vector<std::vector<double> >*);
+    void set_atoms(std::vector<double>*);
 
-
-    void set_nucl(Eigen::MatrixXd*);
     void set_alpha(Eigen::VectorXd*);
+
     void set_elnum(int);
-    void set_Z(Eigen::VectorXi*);
     void SCF_SinglePoint();
 };

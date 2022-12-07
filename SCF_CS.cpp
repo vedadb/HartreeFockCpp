@@ -5,7 +5,7 @@
 #include "headers/SCF_CS.h"
 #define _USE_MATH_DEFINES
 #include "headers/unsupported/Eigen/MatrixFunctions"
-
+#include <vector>
 SCF_CS::SCF_CS(){
 
     std::cout<<"Closed Shell Hartree Fock calculation initialized"<<std::endl;
@@ -18,25 +18,53 @@ void SCF_CS::set_elnum(int elnum){
     std::cout<<"--------------------------------------------------"<<std::endl;
 };
 
-void SCF_CS::set_Z(Eigen::VectorXi* Zvec){
-    Z_at=*Zvec;
+void SCF_CS::set_atoms(std::vector<double>* atomvec){
+
+
+    Eigen::MatrixXd nucl(atomvec->size()/4,3);
+    Eigen::VectorXi Z_at(atomvec->size()/4);
+
+    for(int i=0;i<atomvec->size()/4;i++){
+        Z_at(i)=(*atomvec)[i*4];
+        for(int j=0;j<3;j++)
+            nucl(i,j)=(*atomvec)[i*4+j];
+    }
+
     std::cout<<"Z of nucl: "<<Z_at<<std::endl;
     std::cout<<"--------------------------------------------------"<<std::endl;
-};
-
-void SCF_CS::set_nucl(Eigen::MatrixXd* nuclref){
-
-    nucl=*nuclref;
-
     std::cout<<"Nuclear coordinates:\n "<<nucl<<std::endl;
     std::cout<<"--------------------------------------------------"<<std::endl;
 };
+
 
 void SCF_CS::set_alpha(Eigen::VectorXd* alpharef){
 
     alpha=*alpharef;
 
     std::cout<<"Gaussian coefficients:\n "<<alpha.transpose()<<std::endl;
+    std::cout<<"--------------------------------------------------"<<std::endl;
+};
+
+void SCF_CS::set_alphamat(std::vector<std::vector<double> >* alpharef){
+    
+    
+
+    int nbBasis=0;
+    for(int i=0;i<alpharef->size();i++){
+        nbBasis+=(*alpharef)[i].size()-1;
+    }
+    Eigen::MatrixXd alphamat(nbBasis,2);
+    int k=0;
+    for(int i=0;i<alpharef->size();i++){
+         for(int j=1;j<(*alpharef)[i].size();j++){
+            alphamat(k,0)=(*alpharef)[i][0];
+            alphamat(k,1)=(*alpharef)[i][j];
+            k++;
+         }
+    }
+
+
+    std::cout<<"Gaussian coefficients:\n "<<alphamat<<std::endl;
     std::cout<<"--------------------------------------------------"<<std::endl;
 };
 

@@ -10,7 +10,7 @@ public:
     read_param();
     read_param(std::string);
     int N_el;
-    std::vector<double> alphavec;
+    std::vector<std::vector<double> > alphamat;
     std::vector<double> atomvec;
 };
 

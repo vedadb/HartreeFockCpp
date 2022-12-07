@@ -7,33 +7,23 @@
 int main(){
 
     read_param parameters;
-    std::cout<<parameters.alphavec.size()<<std::endl;
+    Eigen::VectorXd alpha(parameters.alphamat[0].size());
 
-    int N_el=parameters.N_el;
-    Eigen::MatrixXd nucl(parameters.atomvec.size()/4,3);
-    Eigen::VectorXd alpha(parameters.alphavec.size());
-    Eigen::VectorXi Z_el(parameters.atomvec.size()/4);
-
-    for(int i=0;i<parameters.alphavec.size();i++)
-        alpha(i)=parameters.alphavec[i];
-    for(int i=0;i<parameters.atomvec.size()/4;i++){
-        Z_el(i)=parameters.atomvec[i*4];
-        for(int j=0;j<3;j++)
-            nucl(i,j)=parameters.atomvec[i*4+j];
-    }
+    for(int i=0;i<parameters.alphamat[0].size();i++)
+        alpha(i)=parameters.alphamat[0][i];
 
     SCF_CS calc;
 
-    calc.set_elnum(N_el);
-    calc.set_nucl(&nucl);
-    calc.set_alpha(&alpha);
-    calc.set_Z(&Z_el);
+    calc.set_elnum(parameters.N_el);
+    calc.set_atoms(&parameters.atomvec);
+    // calc.set_alpha(&alpha);
+    calc.set_alphamat(&parameters.alphamat);
 
-    auto t1=std::chrono::high_resolution_clock::now();
-    calc.SCF_SinglePoint();
-    auto t2=std::chrono::high_resolution_clock::now();
+    // auto t1=std::chrono::high_resolution_clock::now();
+    // calc.SCF_SinglePoint();
+    // auto t2=std::chrono::high_resolution_clock::now();
     
-    std::chrono::duration<double,std::milli> ms_double= t2-t1;
-    std::cout<<"Time elapsed: "<<ms_double.count()<<"ms"<<std::endl;
+    // std::chrono::duration<double,std::milli> ms_double= t2-t1;
+    // std::cout<<"Time elapsed: "<<ms_double.count()<<"ms"<<std::endl;
     return 0;
 }
